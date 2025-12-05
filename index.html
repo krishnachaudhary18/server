@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Kitchen - Recipe Generator & Chef</title>
+    <meta name="description"
+        content="Get complete recipes with ingredients, step-by-step instructions, and nutritional information for any dish.">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+
+<script src="/static/script.js"></script>
+
+    <!-- External CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="floating-shape shape-1"></div>
+        <div class="floating-shape shape-2"></div>
+        <div class="floating-shape shape-3"></div>
+    </div>
+
+
+    <!-- Features Section -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                🍳 AI Kitchen
+            </div>
+            <nav class="nav">
+                <a href="#" class="nav-link" onclick="showMainView()">🏠 Main</a>
+                <a href="#" class="nav-link" onclick="showUnitNormalizer()">⚖️ Unit Normalizer</a>
+                <a href="#" class="nav-link">📖 My Recipes</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Hero Section -->
+        <div id="mainView">
+            <section class="hero">
+                <h1 class="hero-title">Recipe Normalizer & Chef</h1>
+                <p class="hero-subtitle">Transform any dish name into a complete recipe with ingredients, instructions,
+                    videos,
+                    and nutrition facts</p>
+
+                <!-- Search Card -->
+                <div class="search-card">
+                    <!-- Search Input and Button -->
+                    <div class="search-row">
+                        <!-- Search Input -->
+                        <input type="text" id="dishInput" class="search-input"
+                            placeholder="Enter ingredients separated by commas...">
+
+                        <!-- Arrow Button -->
+                        <button id="searchBtn" class="search-arrow-btn">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M5 12h14M12 5l7 7-7 7" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Mode Toggle (Vertical Stack) -->
+                    <div class="mode-toggle">
+                        <button class="mode-btn active" data-mode="recipe">
+                            🥘 New Recipe
+                        </button>
+                        <button class="mode-btn" data-mode="parse">
+                            📝 Parse Text
+                        </button>
+                    </div>
+
+                    <!-- Filter Options (shown in Parse Text mode) -->
+                    <div id="filterOptions" class="filter-options" style="display: none;">
+                        <label class="filter-label">Choose Recipe Type:</label>
+                        <div class="filter-buttons">
+                            <button class="filter-btn active" data-filter="tasty">
+                                <span class="filter-icon">😋</span>
+                                <span class="filter-name">Tasty</span>
+                            </button>
+                            <button class="filter-btn" data-filter="healthy">
+                                <span class="filter-icon">🥗</span>
+                                <span class="filter-name">Healthy</span>
+                            </button>
+                            <button class="filter-btn" data-filter="quick">
+                                <span class="filter-icon">⚡</span>
+                                <span class="filter-name">Quick</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Loading Spinner -->
+                    <div id="loading" class="loading">
+                        <div class="spinner"></div>
+                        <p>Generating your recipe...</p>
+                    </div>
+
+                    <!-- Error Alert -->
+                    <div id="errorAlert" class="error-alert"></div>
+                </div>
+            </section>
+
+            <!-- Features Section -->
+            <section class="features-section">
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🎯</div>
+                        <h3 class="feature-title">Instant Recipes</h3>
+                        <p class="feature-desc">Search any dish name and get complete recipes instantly with
+                            professional cooking guidance.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🎥</div>
+                        <h3 class="feature-title">Video Tutorials</h3>
+                        <p class="feature-desc">Watch step-by-step cooking videos from YouTube directly in the
+                            app.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📊</div>
+                        <h3 class="feature-title">Nutrition Facts</h3>
+                        <p class="feature-desc">Get detailed nutrition information for each recipe, including calories,
+                            protein,
+                            carbs, and more.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Popular Recipes Section -->
+            <section class="suggestions-section" id="suggestionsSection">
+                <h2 class="section-title">✨ Popular Recipes</h2>
+                <div class="suggestions-grid" id="suggestionsGrid"></div>
+
+
+            </section>
+        </div>
+
+        <!-- Unit Normalizer View -->
+        <div id="unitNormalizerView" style="display: none;">
+            <section class="hero">
+                <h1 class="hero-title">Recipe Unit Normalizer</h1>
+                <p class="hero-subtitle">Convert cooking measurements between different units for your recipes</p>
+
+                <div class="search-card" style="max-width: 700px;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+                        <div>
+                            <label
+                                style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--gray-800);">From</label>
+                            <input type="number" id="convertValue" class="search-input" placeholder="Enter value"
+                                style="width: 100%; margin-bottom: 0.75rem;">
+                            <select id="convertFrom" class="search-input" style="width: 100%;">
+                                <optgroup label="Volume (Liquid)">
+                                    <option value="cup">Cups</option>
+                                    <option value="tbsp">Tablespoons</option>
+                                    <option value="tsp">Teaspoons</option>
+                                    <option value="ml">Milliliters</option>
+                                    <option value="l">Liters</option>
+                                    <option value="fl-oz">Fluid Ounces</option>
+                                    <option value="pint">Pints</option>
+                                    <option value="quart">Quarts</option>
+                                    <option value="gallon">Gallons</option>
+                                </optgroup>
+                                <optgroup label="Weight (Dry)">
+                                    <option value="g">Grams</option>
+                                    <option value="kg">Kilograms</option>
+                                    <option value="oz">Ounces</option>
+                                    <option value="lb">Pounds</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        <div>
+                            <label
+                                style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--gray-800);">To</label>
+                            <div id="convertResult" class="search-input"
+                                style="background: linear-gradient(135deg, var(--primary-light), var(--primary)); color: white; display: flex; align-items: center; justify-content: center; height: 54px; margin-bottom: 0.75rem; font-weight: bold; font-size: 1.1rem; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);">
+                                -</div>
+                            <select id="convertTo" class="search-input" style="width: 100%;">
+                                <optgroup label="Volume (Liquid)">
+                                    <option value="ml">Milliliters</option>
+                                    <option value="l">Liters</option>
+                                    <option value="cup">Cups</option>
+                                    <option value="tbsp">Tablespoons</option>
+                                    <option value="tsp">Teaspoons</option>
+                                    <option value="fl-oz">Fluid Ounces</option>
+                                    <option value="pint">Pints</option>
+                                    <option value="quart">Quarts</option>
+                                    <option value="gallon">Gallons</option>
+                                </optgroup>
+                                <optgroup label="Weight (Dry)">
+                                    <option value="g">Grams</option>
+                                    <option value="kg">Kilograms</option>
+                                    <option value="oz">Ounces</option>
+                                    <option value="lb">Pounds</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="search-btn" onclick="convertUnits()" style="width: 100%;">🔄 Convert Units</button>
+
+                    <!-- Quick Reference Card -->
+                    <div
+                        style="margin-top: 2rem; padding: 1.5rem; background: var(--gray-50); border-radius: 12px; border: 1px solid var(--gray-200);">
+                        <h3 style="margin-bottom: 1rem; color: var(--gray-800); font-size: 1.1rem;">📋 Quick Reference
+                        </h3>
+                        <div
+                            style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; font-size: 0.9rem; color: var(--gray-700);">
+                            <div>• 1 Cup = 240 ml</div>
+                            <div>• 1 Tbsp = 15 ml</div>
+                            <div>• 1 Tsp = 5 ml</div>
+                            <div>• 1 Oz = 28.35 g</div>
+                            <div>• 1 Lb = 453.59 g</div>
+                            <div>• 1 Kg = 1000 g</div>
+                            <div>• 1 Pint = 473 ml</div>
+                            <div>• 1 Quart = 946 ml</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Recipe Display Section -->
+        <section id="recipeDisplay" class="recipe-display-section" style="display: none;">
+            <div class="recipe-container">
+                <!-- Recipe Header -->
+                <div class="recipe-header">
+                    <button class="back-button" onclick="closeRecipeDisplay()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M19 12H5M12 19l-7-7 7-7" />
+                        </svg>
+                        Back to Search
+                    </button>
+                </div>
+
+                <!-- Recipe Card -->
+                <div class="recipe-card">
+                    <!-- Recipe Image -->
+                    <div class="recipe-image-container">
+                        <img id="recipeImage" src="" alt="Recipe" class="recipe-image">
+                        <div class="recipe-image-overlay">
+                            <h1 id="recipeTitle" class="recipe-title"></h1>
+                        </div>
+                    </div>
+
+                    <!-- Recipe Meta Info -->
+                    <div class="recipe-meta">
+                        <div class="meta-item">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="M12 6v6l4 2" />
+                            </svg>
+                            <span id="prepTime">-</span>
+                        </div>
+                        <div class="meta-item">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="M12 6v6l4 2" />
+                            </svg>
+                            <span id="cookTime">-</span>
+                        </div>
+                        <div class="meta-item">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" />
+                            </svg>
+                            <button onclick="adjustServings(-1)"
+                                style="background: none; border: none; cursor: pointer; color: var(--primary); font-size: 1.2rem; padding: 0 0.25rem;">-</button>
+                            <span id="servingsCount">4</span>
+                            <button onclick="adjustServings(1)"
+                                style="background: none; border: none; cursor: pointer; color: var(--primary); font-size: 1.2rem; padding: 0 0.25rem;">+</button>
+                            servings
+                        </div>
+                        <div class="meta-item">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                            </svg>
+                            <span id="difficulty">-</span>
+                        </div>
+                    </div>
+
+                    <!-- Recipe Content -->
+                    <div class="recipe-content">
+                        <!-- Description -->
+                        <div class="recipe-section" id="descriptionSection">
+                            <p id="recipeDescription" class="recipe-description"></p>
+                            <span id="dietaryBadge" class="badge" style="display: none;"></span>
+                        </div>
+
+                        <!-- Ingredients -->
+                        <div class="recipe-section">
+                            <h2 class="section-title">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M3 3h18v18H3zM9 3v18" />
+                                </svg>
+                                Ingredients
+                            </h2>
+                            <ul id="ingredientsList" class="ingredients-list">
+                            </ul>
+                        </div>
+
+                        <!-- Instructions -->
+                        <div class="recipe-section">
+                            <h2 class="section-title">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                                </svg>
+                                Instructions
+                            </h2>
+                            <ol id="instructionsList" class="instructions-list">
+                            </ol>
+
+                            <!-- YouTube Video Section -->
+                            <div class="recipe-section" id="youtubeSection" style="display: none;">
+                                <h2 class="section-title">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <path
+                                            d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z" />
+                                        <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" />
+                                    </svg>
+                                    Video Tutorial
+                                </h2>
+                                <div class="youtube-container">
+                                    <a id="youtubeLink" href="#" target="_blank" class="youtube-link">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                            <path
+                                                d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+                                        </svg>
+                                        Watch Cooking Tutorial on YouTube
+                                    </a>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Nutritional Info (Optional) -->
+                        <div class="recipe-section" id="nutritionSection" style="display: none;">
+                            <h2 class="section-title">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <path d="M12 16v-4M12 8h.01" />
+                                </svg>
+                                Nutritional Information (per serving)
+                            </h2>
+                            <div id="nutritionInfo" class="nutrition-grid">
+                            </div>
+                            <p
+                                style="font-size: 0.75rem; color: var(--gray-600); margin-top: 1rem; text-align: center;">
+                                💡 Calculated from ingredients using USDA data &
+                                OpenFood Facts
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
