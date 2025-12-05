@@ -689,7 +689,7 @@ Return ONLY valid JSON with this exact schema:
     "notes": "Brief note about when to use these alternatives"
 }}
 
-Return ONLY the JSON, no markdown formatting."""
+"""Return ONLY the JSON, no markdown formatting."""
         
         response = await asyncio.to_thread(model.generate_content, prompt)
         text = response.text.strip()
@@ -724,7 +724,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 # Serve index.html at the root URL
 @app.get("/")
 async def read_index():
-    return FileResponse('static/index.html')
+    return FileResponse('index.html')
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8001)
