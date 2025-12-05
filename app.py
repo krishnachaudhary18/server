@@ -674,6 +674,7 @@ async def suggest_ingredient_replacement(request: IngredientReplacement):
     try:
         model = genai.GenerativeModel('gemini-2.0-flash')
         
+        # NOTICE: The prompt starts with f""" and ends with """ only at the very bottom
         prompt = f"""Suggest 4-5 practical alternatives for the ingredient "{request.ingredient}" in the recipe "{request.recipe_name}".
 
 Consider:
@@ -689,7 +690,7 @@ Return ONLY valid JSON with this exact schema:
     "notes": "Brief note about when to use these alternatives"
 }}
 
-"""Return ONLY the JSON, no markdown formatting."""
+Return ONLY the JSON, no markdown formatting."""
         
         response = await asyncio.to_thread(model.generate_content, prompt)
         text = response.text.strip()
@@ -715,7 +716,6 @@ Return ONLY valid JSON with this exact schema:
             alternatives=["Check recipe for alternatives"],
             notes="Unable to generate suggestions at this time."
         )
-
 # ... (existing API endpoints above) ...
 
 # Mount the static directory to serve HTML, CSS, JS
@@ -728,3 +728,4 @@ async def read_index():
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8001)
+
